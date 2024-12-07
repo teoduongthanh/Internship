@@ -13,7 +13,7 @@ require('dotenv').config();
 
 const port = process.env.PORT || '';
 app.use(cors({
- origin: 'https://gamehay.id.vn' ||'http://localhost:3000',
+ origin: 'https://gamehay.id.vn' ||'http://localhost:3000' ||'https://daily.gamehay.id.vn/' ,
   credentials: true
 }));
 
