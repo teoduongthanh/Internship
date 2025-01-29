@@ -1,57 +1,50 @@
 const express = require("express");
-const mysql = require('mysql2/promise'); // Sử dụng mysql2 với promise
+const dotenv = require("dotenv");
+const mongoose =require('mongoose'); 
 const cors = require('cors');
 const routes = require('./routes');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+
+//cung cấp các cấu hình cho router API
+
 const app = express();
-const session = require('express-session');
-const path = require("path");
 
-// Đảm bảo dotenv được cấu hình chính xác
-require('dotenv').config(); 
+const port = process.env.PORT || 5001;
 
-const port = process.env.PORT || '';
-app.use(cors({
- origin: 'https://daily.gamehay.id.vn' ,
+app.use(cors(
+  {
+    
+  origin:'http://localhost:3000',
   credentials: true
-}));
+}
+))
+dotenv.config();
 
-const db_host = process.env.DB_HOST ; // Sử dụng trực tiếp process.env mà không cần `${}`
-console.log("db_host:", db_host);
+//nhận api mặc định khi kết nối server
 
-// Nhận API mặc định khi kết nối server
 app.get("/", (req, res) => {
-  return res.send("Success connect with Port");
+  return res.send("Cussess connect with Port");
 });
 
+const URL = process.env.DATABASE_URL;
 
-// Kết nối MySQL
-const connectToDatabase = async () => {
-  try {
-    const connection = await mysql.createConnection({
-      host:  process.env.DB_HOST  || 'localhost',
-      user: process.env.DB_USER || 'root',
-      password:  process.env.DB_PASSWORD || '',
-      database:   process.env.DB_NAME||'dailydictation',
-    });
-    console.log('Connected to MySQL database successfully!');
-    return connection;
-  } catch (err) {
-    console.error('Failed to connect to MySQL:', err);
-    process.exit(1); // Dừng ứng dụng nếu kết nối thất bại
-  }
-};
+//kiểm tra xem cso kết nối thành công hay không
 
-// Sử dụng middleware
-app.use(bodyParser.json());
-app.use(cookieParser());
+mongoose.connect(`${URL}`)  
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((err) => {
+    console.log('Failed to connect to MongoDB', err);
+  });
 
-// Định tuyến
+
+app.use(bodyParser.json())
+app.use(cookieParser())
+
 routes(app);
 
-// Khởi chạy server
-app.listen(port, async () => {
-  await connectToDatabase(); // Kết nối đến cơ sở dữ liệu khi khởi chạy server
-  console.log("Server is running on port", port);
+app.listen(port, () => {
+    console.log("Server is running on ",port);
 });
