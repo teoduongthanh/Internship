@@ -15,7 +15,7 @@ const port = process.env.PORT || 5001;
 app.use(cors(
   {
     
-  origin:'http://localhost:3000',
+  origin:'https://popoitung.com',
   credentials: true
 }
 ))
