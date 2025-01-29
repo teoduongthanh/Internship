@@ -15,7 +15,7 @@ const port = process.env.PORT || 5001;
 app.use(cors(
   {
     
-  origin:'https://popoitung.com',
+  origin:'https://web-li-xi-25vc.vercel.app',
   credentials: true
 }
 ))
